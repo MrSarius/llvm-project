@@ -302,10 +302,14 @@ bool ProcessElfCore::IsAlive() { return true; }
 
 // Process Memory
 size_t ProcessElfCore::ReadMemory(lldb::addr_t addr, void *buf, size_t size,
+<<<<<<< HEAD
                                   Status &error) {
   if (lldb::ABISP abi_sp = GetABI())
     addr = abi_sp->FixAnyAddress(addr);
 
+=======
+                                  Status &error, ExecutionContext *exe_ctx) {
+>>>>>>> b765951fb47d (wamr patch)
   // Don't allow the caching that lldb_private::Process::ReadMemory does since
   // in core files we have it all cached our our core file anyway.
   return DoReadMemory(addr, buf, size, error);

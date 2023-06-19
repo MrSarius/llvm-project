@@ -17,6 +17,11 @@
 #include "llvm/Support/Compiler.h"
 #include <cassert>
 #include <climits>
+<<<<<<< HEAD
+=======
+#include <limits>
+#include <cmath>
+>>>>>>> b765951fb47d (wamr patch)
 #include <cstdint>
 #include <cstring>
 #include <limits>

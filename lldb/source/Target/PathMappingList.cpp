@@ -238,6 +238,7 @@ PathMappingList::ReverseRemapPath(const FileSpec &file, FileSpec &fixed) const {
   return std::nullopt;
 }
 
+<<<<<<< HEAD
 std::optional<FileSpec>
 PathMappingList::FindFile(const FileSpec &orig_spec) const {
   // We must normalize the orig_spec again using the host's path style,
@@ -245,6 +246,15 @@ PathMappingList::FindFile(const FileSpec &orig_spec) const {
   // if they use different path styles.
   if (auto remapped = RemapPath(NormalizePath(orig_spec.GetPath()),
                                 /*only_if_exists=*/true))
+=======
+llvm::Optional<FileSpec> PathMappingList::FindFile(const FileSpec &orig_spec) const {
+  // We must normalize the orig_spec again using the host's path style,
+  // otherwise there will be mismatch between the host and remote platform
+  // if they use different path styles.
+  if (auto remapped = RemapPath(
+          NormalizePath(ConstString(orig_spec.GetCString())).GetStringRef(),
+          /*only_if_exists=*/true))
+>>>>>>> b765951fb47d (wamr patch)
     return remapped;
 
   return {};

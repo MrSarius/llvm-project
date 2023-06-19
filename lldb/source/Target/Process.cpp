@@ -1923,10 +1923,15 @@ Status Process::DisableSoftwareBreakpoint(BreakpointSite *bp_site) {
 // code
 //#define VERIFY_MEMORY_READS
 
+<<<<<<< HEAD
 size_t Process::ReadMemory(addr_t addr, void *buf, size_t size, Status &error) {
   if (ABISP abi_sp = GetABI())
     addr = abi_sp->FixAnyAddress(addr);
 
+=======
+size_t Process::ReadMemory(addr_t addr, void *buf, size_t size, Status &error,
+                           ExecutionContext *exe_ctx) {
+>>>>>>> b765951fb47d (wamr patch)
   error.Clear();
   if (!GetDisableMemoryCache()) {
 #if defined(VERIFY_MEMORY_READS)

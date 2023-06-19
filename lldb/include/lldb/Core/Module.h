@@ -44,6 +44,7 @@
 
 namespace lldb_private {
 class CompilerDeclContext;
+class DWARFEvaluatorFactory;
 class Function;
 class Log;
 class ObjectFile;
@@ -914,6 +915,7 @@ public:
   /// Update the ArchSpec to a more specific variant.
   bool MergeArchitecture(const ArchSpec &arch_spec);
 
+<<<<<<< HEAD
   /// Accessor for the symbol table parse time metric.
   ///
   /// The value is returned as a reference to allow it to be updated by the
@@ -925,6 +927,9 @@ public:
   /// The value is returned as a reference to allow it to be updated by the
   /// ElapsedTime RAII object.
   StatsDuration &GetSymtabIndexTime() { return m_symtab_index_time; }
+=======
+  DWARFEvaluatorFactory *GetDWARFExpressionEvaluatorFactory();
+>>>>>>> b765951fb47d (wamr patch)
 
   /// \class LookupInfo Module.h "lldb/Core/Module.h"
   /// A class that encapsulates name lookup information.
@@ -1105,6 +1110,8 @@ protected:
 
   std::once_flag m_optimization_warning;
   std::once_flag m_language_warning;
+
+  std::unique_ptr<DWARFEvaluatorFactory> m_dwarf_evaluator_factory;
 
   /// Resolve a file or load virtual address.
   ///

@@ -1927,6 +1927,7 @@ size_t Platform::GetSoftwareBreakpointTrapOpcode(Target &target,
     trap_opcode_size = sizeof(g_i386_opcode);
   } break;
 
+<<<<<<< HEAD
   case llvm::Triple::riscv32:
   case llvm::Triple::riscv64: {
     static const uint8_t g_riscv_opcode[] = {0x73, 0x00, 0x10, 0x00}; // ebreak
@@ -1946,6 +1947,12 @@ size_t Platform::GetSoftwareBreakpointTrapOpcode(Target &target,
                                                  0x00}; // break 0x5
     trap_opcode = g_loongarch_opcode;
     trap_opcode_size = sizeof(g_loongarch_opcode);
+=======
+  case llvm::Triple::wasm32: {
+    static const uint8_t g_wasm_opcode[] = {0x00}; // unreachable
+    trap_opcode = g_wasm_opcode;
+    trap_opcode_size = sizeof(g_wasm_opcode);
+>>>>>>> b765951fb47d (wamr patch)
   } break;
 
   default:

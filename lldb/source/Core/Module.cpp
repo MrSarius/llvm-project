@@ -17,6 +17,7 @@
 #include "lldb/Core/ModuleSpec.h"
 #include "lldb/Core/SearchFilter.h"
 #include "lldb/Core/Section.h"
+#include "lldb/Expression/DWARFEvaluatorFactory.h"
 #include "lldb/Host/FileSystem.h"
 #include "lldb/Host/Host.h"
 #include "lldb/Host/HostInfo.h"
@@ -1663,6 +1664,7 @@ bool Module::GetIsDynamicLinkEditor() {
   return false;
 }
 
+<<<<<<< HEAD
 uint32_t Module::Hash() {
   std::string identifier;
   llvm::raw_string_ostream id_strm(identifier);
@@ -1697,4 +1699,10 @@ DataFileCache *Module::GetIndexCache() {
                             .GetLLDBIndexCachePath()
                             .GetPath());
   return g_data_file_cache;
+=======
+DWARFEvaluatorFactory *Module::GetDWARFExpressionEvaluatorFactory() {
+  if (!m_dwarf_evaluator_factory)
+    m_dwarf_evaluator_factory = DWARFEvaluatorFactory::FindPlugin(this);
+  return m_dwarf_evaluator_factory.get();
+>>>>>>> b765951fb47d (wamr patch)
 }

@@ -80,7 +80,17 @@ public:
   void UpdateValue(uint64_t const_value, lldb::offset_t const_value_byte_size,
                    uint8_t addr_byte_size);
 
+<<<<<<< HEAD
   bool ContainsThreadLocalStorage(const DWARFUnit *dwarf_cu) const;
+=======
+  void SetModule(const lldb::ModuleSP &module) { m_module_wp = module; }
+
+  lldb::ModuleSP GetModule() const { return m_module_wp.lock(); }
+
+  const DWARFUnit *GetDWARFCompileUnit() const { return m_dwarf_cu; }
+
+  bool ContainsThreadLocalStorage() const;
+>>>>>>> b765951fb47d (wamr patch)
 
   bool LinkThreadLocalStorage(
       const DWARFUnit *dwarf_cu,
@@ -88,7 +98,11 @@ public:
           &link_address_callback);
 
   /// Return the call-frame-info style register kind
+<<<<<<< HEAD
   lldb::RegisterKind GetRegisterKind() const;
+=======
+  lldb::RegisterKind  GetRegisterKind() const;
+>>>>>>> b765951fb47d (wamr patch)
 
   /// Set the call-frame-info style register kind
   ///
@@ -153,7 +167,18 @@ public:
 
   void DumpLocation(Stream *s, lldb::DescriptionLevel level, ABI *abi) const;
 
+<<<<<<< HEAD
   bool MatchesOperand(StackFrame &frame, const Instruction::Operand &op) const;
+=======
+  bool MatchesOperand(StackFrame &frame, const Instruction::Operand &op);
+
+  static lldb::addr_t ReadAddressFromDebugAddrSection(const DWARFUnit *dwarf_cu,
+                                                      uint32_t index);
+
+  llvm::Optional<DataExtractor>
+  GetLocationExpression(lldb::addr_t load_function_start,
+                        lldb::addr_t addr) const;
+>>>>>>> b765951fb47d (wamr patch)
 
 private:
   /// A data extractor capable of reading opcode bytes

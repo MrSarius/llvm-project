@@ -16,6 +16,8 @@
 #include "lldb/Core/Module.h"
 #include "lldb/Core/Value.h"
 #include "lldb/Core/dwarf.h"
+#include "lldb/Expression/DWARFEvaluator.h"
+#include "lldb/Expression/DWARFEvaluatorFactory.h"
 #include "lldb/Utility/DataEncoder.h"
 #include "lldb/Utility/LLDBLog.h"
 #include "lldb/Utility/Log.h"
@@ -44,7 +46,23 @@
 
 using namespace lldb;
 using namespace lldb_private;
+<<<<<<< HEAD
 using namespace lldb_private::dwarf;
+=======
+
+lldb::addr_t
+DWARFExpression::ReadAddressFromDebugAddrSection(const DWARFUnit *dwarf_cu,
+                                uint32_t index) {
+  uint32_t index_size = dwarf_cu->GetAddressByteSize();
+  dw_offset_t addr_base = dwarf_cu->GetAddrBase();
+  lldb::offset_t offset = addr_base + index * index_size;
+  const DWARFDataExtractor &data =
+      dwarf_cu->GetSymbolFileDWARF().GetDWARFContext().getOrLoadAddrData();
+  if (data.ValidOffsetForDataOfSize(offset, index_size))
+    return data.GetMaxU64_unchecked(&offset, index_size);
+  return LLDB_INVALID_ADDRESS;
+}
+>>>>>>> b765951fb47d (wamr patch)
 
 // DWARFExpression constructor
 DWARFExpression::DWARFExpression() : m_data() {}
@@ -87,58 +105,20 @@ void DWARFExpression::DumpLocation(Stream *s, lldb::DescriptionLevel level,
       .print(s->AsRawOstream(), DumpOpts, nullptr);
 }
 
+<<<<<<< HEAD
+=======
+void DWARFExpression::SetLocationListAddresses(addr_t cu_file_addr,
+                                               addr_t func_file_addr) {
+  m_loclist_addresses = LoclistAddresses{cu_file_addr, func_file_addr};
+}
+
+>>>>>>> b765951fb47d (wamr patch)
 RegisterKind DWARFExpression::GetRegisterKind() const { return m_reg_kind; }
 
 void DWARFExpression::SetRegisterKind(RegisterKind reg_kind) {
   m_reg_kind = reg_kind;
 }
 
-
-static bool ReadRegisterValueAsScalar(RegisterContext *reg_ctx,
-                                      lldb::RegisterKind reg_kind,
-                                      uint32_t reg_num, Status *error_ptr,
-                                      Value &value) {
-  if (reg_ctx == nullptr) {
-    if (error_ptr)
-      error_ptr->SetErrorString("No register context in frame.\n");
-  } else {
-    uint32_t native_reg =
-        reg_ctx->ConvertRegisterKindToRegisterNumber(reg_kind, reg_num);
-    if (native_reg == LLDB_INVALID_REGNUM) {
-      if (error_ptr)
-        error_ptr->SetErrorStringWithFormat("Unable to convert register "
-                                            "kind=%u reg_num=%u to a native "
-                                            "register number.\n",
-                                            reg_kind, reg_num);
-    } else {
-      const RegisterInfo *reg_info =
-          reg_ctx->GetRegisterInfoAtIndex(native_reg);
-      RegisterValue reg_value;
-      if (reg_ctx->ReadRegister(reg_info, reg_value)) {
-        if (reg_value.GetScalarValue(value.GetScalar())) {
-          value.SetValueType(Value::ValueType::Scalar);
-          value.SetContext(Value::ContextType::RegisterInfo,
-                           const_cast<RegisterInfo *>(reg_info));
-          if (error_ptr)
-            error_ptr->Clear();
-          return true;
-        } else {
-          // If we get this error, then we need to implement a value buffer in
-          // the dwarf expression evaluation function...
-          if (error_ptr)
-            error_ptr->SetErrorStringWithFormat(
-                "register %s can't be converted to a scalar value",
-                reg_info->name);
-        }
-      } else {
-        if (error_ptr)
-          error_ptr->SetErrorStringWithFormat("register %s is not available",
-                                              reg_info->name);
-      }
-    }
-  }
-  return false;
-}
 
 /// Return the length in bytes of the set of operands for \p op. No guarantees
 /// are made on the state of \p data after this call.
@@ -860,6 +840,7 @@ bool DWARFExpression::Evaluate(
     const Value *initial_value_ptr, const Value *object_address_ptr,
     Value &result, Status *error_ptr) {
 
+<<<<<<< HEAD
   if (opcodes.GetByteSize() == 0) {
     if (error_ptr)
       error_ptr->SetErrorString(
@@ -2616,6 +2597,19 @@ bool DWARFExpression::Evaluate(
   }
   result = stack.back();
   return true; // Return true on success
+=======
+  DWARFExpression expr(module_sp, opcodes, dwarf_cu);
+  expr.SetRegisterKind(reg_kind);
+
+  // Use the DWARF expression evaluator registered for this module (or
+  // DWARFEvaluator by default).
+  DWARFEvaluatorFactory *evaluator_factory =
+      module_sp->GetDWARFExpressionEvaluatorFactory();
+  std::unique_ptr<DWARFEvaluator> evaluator =
+      evaluator_factory->CreateDWARFEvaluator(
+          expr, exe_ctx, reg_ctx, initial_value_ptr, object_address_ptr);
+  return evaluator->Evaluate(result, error_ptr);
+>>>>>>> b765951fb47d (wamr patch)
 }
 
 bool DWARFExpression::ParseDWARFLocationList(

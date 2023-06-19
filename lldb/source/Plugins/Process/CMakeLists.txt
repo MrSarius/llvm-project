@@ -18,4 +18,8 @@ add_subdirectory(Utility)
 add_subdirectory(elf-core)
 add_subdirectory(mach-core)
 add_subdirectory(minidump)
+<<<<<<< HEAD
 add_subdirectory(FreeBSDKernel)
+=======
+add_subdirectory(wasm)
+>>>>>>> b765951fb47d (wamr patch)

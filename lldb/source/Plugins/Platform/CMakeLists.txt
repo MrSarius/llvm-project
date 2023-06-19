@@ -1,4 +1,5 @@
 add_subdirectory(Android)
+<<<<<<< HEAD
 add_subdirectory(FreeBSD)
 add_subdirectory(gdb-server)
 add_subdirectory(Linux)
@@ -8,3 +9,6 @@ add_subdirectory(OpenBSD)
 add_subdirectory(POSIX)
 add_subdirectory(QemuUser)
 add_subdirectory(Windows)
+=======
+add_subdirectory(wasm-remote)
+>>>>>>> b765951fb47d (wamr patch)
